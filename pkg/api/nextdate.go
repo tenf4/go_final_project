@@ -24,7 +24,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	switch typeOfRepeat {
 	case "d":
 		if len(arr) < 2 {
-			return "", errors.New("no interval for d")
+			return "", errors.New("interval for d not found")
 		}
 
 		interval, err := strconv.Atoi(arr[1])
@@ -32,7 +32,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 			return "", errors.New("interval conversion error")
 		}
 
-		if interval > 400 || interval == 1 {
+		if interval > 400 || interval < 1 {
 			return "", errors.New("interval number isn't allowed (1 <= interval < 400)")
 		}
 

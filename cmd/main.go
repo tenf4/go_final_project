@@ -5,7 +5,6 @@ import (
 	"go_final_project/pkg/api"
 	"go_final_project/pkg/db"
 	"go_final_project/pkg/server"
-	//"go_final_project/internal"
 )
 
 // go build -o app.exe ./cmd/main.go

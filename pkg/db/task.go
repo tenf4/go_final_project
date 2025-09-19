@@ -15,7 +15,6 @@ type Task struct {
 
 func AddTask(task *Task) (int64, error) {
 	var id int64
-	// определите запрос
 	query := `INSERT INTO scheduler (date, title, comment, repeat) VALUES (?, ?, ?, ?)`
 	res, err := database.Exec(query, task.Date, task.Title, task.Comment, task.Repeat)
 	if err != nil {
@@ -24,6 +23,22 @@ func AddTask(task *Task) (int64, error) {
 	}
 	id, err = res.LastInsertId()
 	return id, err
+}
+func DeleteTask(id string) error {
+	query := `DELETE FROM scheduler WHERE id = ?`
+	res, err := database.Exec(query, id)
+	if err != nil {
+		return fmt.Errorf("can't delete task: %v", err)
+	}
+
+	affectedRowsCount, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("error while getting affected rows: %v", err)
+	}
+	if affectedRowsCount == 0 {
+		return fmt.Errorf("can't find task")
+	}
+	return nil
 }
 
 func GetTask(id string) (*Task, error) {
@@ -78,4 +93,24 @@ func Tasks(limit int) ([]*Task, error) {
 	}
 	return tasks, nil
 
+}
+
+func UpdateDate(id string, new_date string) error {
+
+	query := `UPDATE scheduler SET date = ? WHERE id = ?`
+	res, err := database.Exec(query, new_date, id)
+	if err != nil {
+		return fmt.Errorf("database error: %v", err)
+	}
+
+	affectedRowsCount, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("error getting affected rows: %v", err)
+	}
+
+	if affectedRowsCount == 0 {
+		return fmt.Errorf("task not found")
+	}
+
+	return nil
 }

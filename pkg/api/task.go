@@ -19,6 +19,10 @@ func taskHandler(w http.ResponseWriter, req *http.Request) {
 
 	case http.MethodGet:
 		getTaskHandler(w, req)
+
+	case http.MethodDelete:
+		deleteTaskHandler(w, req)
+
 	}
 
 }
@@ -91,5 +95,21 @@ func updateTaskHandler(w http.ResponseWriter, req *http.Request) {
 		writeJsonError(w, http.StatusBadRequest, err)
 		return
 	}
+	writeJson(w, map[string]interface{}{})
+}
+
+func deleteTaskHandler(w http.ResponseWriter, req *http.Request) {
+	id := req.URL.Query().Get("id")
+	if id == "" {
+		writeJsonError(w, http.StatusBadRequest, fmt.Errorf("can't find id parameter"))
+		return
+	}
+
+	err := db.DeleteTask(id)
+	if err != nil {
+		writeJsonError(w, http.StatusBadRequest, fmt.Errorf("error while deleting task: %v", err))
+		return
+	}
+
 	writeJson(w, map[string]interface{}{})
 }
