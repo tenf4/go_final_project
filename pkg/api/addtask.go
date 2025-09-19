@@ -11,6 +11,7 @@ import (
 
 func addTaskHandler(w http.ResponseWriter, req *http.Request) {
 	var task db.Task
+
 	data, _ := io.ReadAll(req.Body)
 	json.Unmarshal(data, &task)
 	now := time.Now()

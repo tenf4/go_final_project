@@ -38,6 +38,7 @@ func DeleteTask(id string) error {
 	if affectedRowsCount == 0 {
 		return fmt.Errorf("can't find task")
 	}
+
 	return nil
 }
 

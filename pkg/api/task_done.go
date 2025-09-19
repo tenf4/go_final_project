@@ -40,6 +40,7 @@ func taskDoneHandler(w http.ResponseWriter, req *http.Request) {
 		}
 
 	}
+
 	err = writeJson(w, map[string]interface{}{})
 	if err != nil {
 		http.Error(w, "Server error", http.StatusInternalServerError)

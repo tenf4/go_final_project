@@ -14,7 +14,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	defer db.Close()
+
 	api.Init()
 	err = server.LaunchServer()
 	if err != nil {

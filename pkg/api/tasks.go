@@ -21,6 +21,7 @@ func tasksHandler(w http.ResponseWriter, r *http.Request) {
 		writeJsonError(w, http.StatusBadRequest, fmt.Errorf("this method is not allowed"))
 		return
 	}
+
 	if tasks == nil {
 		tasks = []*db.Task{}
 	}

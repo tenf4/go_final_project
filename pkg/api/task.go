@@ -53,6 +53,7 @@ func getTaskHandler(w http.ResponseWriter, req *http.Request) {
 func updateTaskHandler(w http.ResponseWriter, req *http.Request) {
 	var task db.Task
 	now := time.Now()
+
 	data, err := io.ReadAll(req.Body)
 	if err != nil {
 		writeJsonError(w, http.StatusBadRequest, fmt.Errorf("invalid body request"))

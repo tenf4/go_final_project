@@ -22,6 +22,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	}
 
 	switch typeOfRepeat {
+
 	case "d":
 		if len(arr) < 2 {
 			return "", errors.New("interval for d not found")

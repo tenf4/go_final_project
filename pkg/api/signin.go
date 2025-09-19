@@ -81,6 +81,7 @@ func signinHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+
 	_, err = w.Write([]byte(fmt.Sprintf(`{"token": "%s"}`, tokenString)))
 	if err != nil {
 		http.Error(w, "server error", http.StatusInternalServerError)
