@@ -28,12 +28,12 @@ func DeleteTask(id string) error {
 	query := `DELETE FROM scheduler WHERE id = ?`
 	res, err := database.Exec(query, id)
 	if err != nil {
-		return fmt.Errorf("can't delete task: %v", err)
+		return fmt.Errorf("can't delete task: %w", err)
 	}
 
 	affectedRowsCount, err := res.RowsAffected()
 	if err != nil {
-		return fmt.Errorf("error while getting affected rows: %v", err)
+		return fmt.Errorf("error while getting affected rows: %w", err)
 	}
 	if affectedRowsCount == 0 {
 		return fmt.Errorf("can't find task")
@@ -50,7 +50,7 @@ func GetTask(id string) (*Task, error) {
 		return nil, fmt.Errorf("can't find task")
 	}
 	if err != nil {
-		return nil, fmt.Errorf("can't get task: %v", err)
+		return nil, fmt.Errorf("can't get task: %w", err)
 	}
 	return &task, nil
 }
@@ -59,11 +59,11 @@ func UpdateTask(task *Task) error {
 	query := `UPDATE scheduler SET date = ?, title = ?, comment = ?, repeat = ? WHERE id = ?`
 	res, err := database.Exec(query, task.Date, task.Title, task.Comment, task.Repeat, task.ID)
 	if err != nil {
-		return fmt.Errorf("update task fail: %v", err)
+		return fmt.Errorf("update task fail: %w", err)
 	}
 	affectedRowsCount, err := res.RowsAffected()
 	if err != nil {
-		return fmt.Errorf("failed to get affected rows: %v", err)
+		return fmt.Errorf("failed to get affected rows: %w", err)
 	}
 	if affectedRowsCount == 0 {
 		return fmt.Errorf("task not found")
@@ -100,12 +100,12 @@ func UpdateDate(id string, new_date string) error {
 	query := `UPDATE scheduler SET date = ? WHERE id = ?`
 	res, err := database.Exec(query, new_date, id)
 	if err != nil {
-		return fmt.Errorf("database error: %v", err)
+		return fmt.Errorf("database error: %w", err)
 	}
 
 	affectedRowsCount, err := res.RowsAffected()
 	if err != nil {
-		return fmt.Errorf("error getting affected rows: %v", err)
+		return fmt.Errorf("error getting affected rows: %w", err)
 	}
 
 	if affectedRowsCount == 0 {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"go_final_project/pkg/api"
 	"go_final_project/pkg/db"
 	"go_final_project/pkg/server"
@@ -13,8 +12,9 @@ func main() {
 	dbFile := "scheduler.db"
 	err := db.Init(dbFile)
 	if err != nil {
-		fmt.Printf("Database creation error")
+		panic(err)
 	}
+	defer db.Close()
 	api.Init()
 	err = server.LaunchServer()
 	if err != nil {

@@ -74,12 +74,16 @@ func signinHandler(w http.ResponseWriter, req *http.Request) {
 	claims := jwt.MapClaims{"pass_hash": hashPassword}
 
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token_string, err := jwtToken.SignedString([]byte(pass))
+	tokenString, err := jwtToken.SignedString([]byte(pass))
 	if err != nil {
 		http.Error(w, `{"error": "token generation error"}`, http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(fmt.Sprintf(`{"token": "%s"}`, token_string)))
+	_, err = w.Write([]byte(fmt.Sprintf(`{"token": "%s"}`, tokenString)))
+	if err != nil {
+		http.Error(w, "server error", http.StatusInternalServerError)
+		return
+	}
 }

@@ -50,13 +50,17 @@ func addTaskHandler(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	task_id, err := db.AddTask(&task)
+	taskId, err := db.AddTask(&task)
 	if err != nil {
 		http.Error(w, `{"error" : "error while adding the task to database"}`, http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf(`{"id" : "%d"}`, task_id)))
+
+	_, err = w.Write([]byte(fmt.Sprintf(`{"id" : "%d"}`, taskId)))
+	if err != nil {
+		http.Error(w, `{"error" : "server error"}`, http.StatusInternalServerError)
+		return
+	}
 }

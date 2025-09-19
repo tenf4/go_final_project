@@ -23,6 +23,9 @@ func taskHandler(w http.ResponseWriter, req *http.Request) {
 	case http.MethodDelete:
 		deleteTaskHandler(w, req)
 
+	default:
+		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
+		return
 	}
 
 }
@@ -30,17 +33,21 @@ func taskHandler(w http.ResponseWriter, req *http.Request) {
 func getTaskHandler(w http.ResponseWriter, req *http.Request) {
 	id := req.URL.Query().Get("id")
 	if id == "" {
-		writeJsonError(w, http.StatusBadRequest, fmt.Errorf("incorrect id"))
+		writeJsonError(w, http.StatusInternalServerError, fmt.Errorf("incorrect id"))
 		return
 	}
 
 	task, err := db.GetTask(id)
 	if err != nil {
-		writeJsonError(w, http.StatusBadRequest, fmt.Errorf("can't find task"))
+		writeJsonError(w, http.StatusInternalServerError, fmt.Errorf("can't find task"))
 		return
 	}
 
-	writeJson(w, task)
+	err = writeJson(w, task)
+	if err != nil {
+		http.Error(w, "server error", http.StatusInternalServerError)
+		return
+	}
 }
 
 func updateTaskHandler(w http.ResponseWriter, req *http.Request) {
@@ -53,7 +60,7 @@ func updateTaskHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if err := json.Unmarshal(data, &task); err != nil {
-		writeJsonError(w, http.StatusBadRequest, fmt.Errorf("json format invalid"))
+		writeJsonError(w, http.StatusInternalServerError, fmt.Errorf("json format invalid"))
 		return
 	}
 
@@ -73,7 +80,7 @@ func updateTaskHandler(w http.ResponseWriter, req *http.Request) {
 
 	t, err := time.Parse("20060102", task.Date)
 	if err != nil {
-		writeJsonError(w, http.StatusBadRequest, err)
+		writeJsonError(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -92,10 +99,16 @@ func updateTaskHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	err = db.UpdateTask(&task)
 	if err != nil {
-		writeJsonError(w, http.StatusBadRequest, err)
+		writeJsonError(w, http.StatusInternalServerError, err)
 		return
 	}
-	writeJson(w, map[string]interface{}{})
+
+	err = writeJson(w, map[string]interface{}{})
+	if err != nil {
+		http.Error(w, "server error", http.StatusInternalServerError)
+		return
+	}
+
 }
 
 func deleteTaskHandler(w http.ResponseWriter, req *http.Request) {
@@ -107,9 +120,13 @@ func deleteTaskHandler(w http.ResponseWriter, req *http.Request) {
 
 	err := db.DeleteTask(id)
 	if err != nil {
-		writeJsonError(w, http.StatusBadRequest, fmt.Errorf("error while deleting task: %v", err))
+		writeJsonError(w, http.StatusBadRequest, fmt.Errorf("error while deleting task: %w", err))
 		return
 	}
 
-	writeJson(w, map[string]interface{}{})
+	err = writeJson(w, map[string]interface{}{})
+	if err != nil {
+		http.Error(w, "server error", http.StatusInternalServerError)
+		return
+	}
 }

@@ -37,3 +37,10 @@ func Init(dbFile string) error {
 	}
 	return nil
 }
+
+func Close() error {
+	if database != nil {
+		return database.Close()
+	}
+	return nil
+}
